@@ -9,7 +9,7 @@ import React, {
 
 import { Product } from "@/types/product";
 
-type CartItem = {
+export type CartItem = {
   product: Product;
   quantity: number;
   size: string;
@@ -17,39 +17,78 @@ type CartItem = {
 
 type CartContextType = {
   cart: CartItem[];
-  addToCart: (product: Product, quantity: number, size: string) => void;
-  removeFromCart: (productId: number) => void;
-  updateQuantity: (productId: number, quantity: number) => void;
+
+  isCartOpen: boolean;
+
+  addToCart: (
+    product: Product,
+    quantity: number,
+    size: string
+  ) => void;
+
+  removeFromCart: (
+    productId: number,
+    size?: string
+  ) => void;
+
+  updateQuantity: (
+    productId: number,
+    quantity: number,
+    size?: string
+  ) => void;
+
+  openCart: () => void;
+  closeCart: () => void;
 };
 
-const CartContext = createContext<CartContextType | undefined>(
-  undefined
-);
+const CartContext =
+  createContext<
+    CartContextType | undefined
+  >(undefined);
+
+const CART_STORAGE_KEY =
+  "threads-cart";
 
 export function CartProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [cart, setCart] =
+    useState<CartItem[]>([]);
 
-  // Load cart from localStorage
+  const [isCartOpen, setIsCartOpen] =
+    useState(false);
+
+  const [isLoaded, setIsLoaded] =
+    useState(false);
+
+  /*
+    Load saved cart.
+  */
   useEffect(() => {
     try {
-      const savedCart = localStorage.getItem("threads-cart");
+      const savedCart =
+        localStorage.getItem(
+          CART_STORAGE_KEY
+        );
 
       if (savedCart) {
         setCart(JSON.parse(savedCart));
       }
     } catch (error) {
-      console.error("Failed to load cart:", error);
+      console.error(
+        "Failed to load cart:",
+        error
+      );
     } finally {
       setIsLoaded(true);
     }
   }, []);
 
-  // Save cart to localStorage
+  /*
+    Save cart whenever it changes.
+  */
   useEffect(() => {
     if (!isLoaded) {
       return;
@@ -57,32 +96,47 @@ export function CartProvider({
 
     try {
       localStorage.setItem(
-        "threads-cart",
+        CART_STORAGE_KEY,
         JSON.stringify(cart)
       );
     } catch (error) {
-      console.error("Failed to save cart:", error);
+      console.error(
+        "Failed to save cart:",
+        error
+      );
     }
   }, [cart, isLoaded]);
 
-const addToCart = (
-  product: Product,
-  quantity: number,
-  size: string,
-) => {
+  /*
+    Add product to cart.
+
+    Same product + same size = increase quantity.
+  */
+  const addToCart = (
+    product: Product,
+    quantity: number,
+    size: string
+  ) => {
     setCart((currentCart) => {
-      const existingItem = currentCart.find(
-        (item) => item.product.id === product.id
-      );
+      const existingItem =
+        currentCart.find(
+          (item) =>
+            item.product.id === product.id &&
+            item.size === size
+        );
 
       if (existingItem) {
-        return currentCart.map((item) =>
-          item.product.id === product.id
-            ? {
-                ...item,
-                quantity: item.quantity + 1,
-              }
-            : item
+        return currentCart.map(
+          (item) =>
+            item.product.id === product.id &&
+            item.size === size
+              ? {
+                  ...item,
+                  quantity:
+                    item.quantity +
+                    quantity,
+                }
+              : item
         );
       }
 
@@ -90,49 +144,99 @@ const addToCart = (
         ...currentCart,
         {
           product,
-          quantity: 1,
+          quantity,
           size,
         },
       ];
     });
+
+    /*
+      Open drawer after adding item.
+    */
+    setIsCartOpen(true);
   };
 
-  const removeFromCart = (productId: number) => {
+  const removeFromCart = (
+    productId: number,
+    size?: string
+  ) => {
     setCart((currentCart) =>
-      currentCart.filter(
-        (item) => item.product.id !== productId
-      )
+      currentCart.filter((item) => {
+        if (
+          item.product.id !== productId
+        ) {
+          return true;
+        }
+
+        if (
+          size !== undefined &&
+          item.size !== size
+        ) {
+          return true;
+        }
+
+        return false;
+      })
     );
   };
 
   const updateQuantity = (
     productId: number,
-    quantity: number
+    quantity: number,
+    size?: string
   ) => {
     if (quantity < 1) {
-      removeFromCart(productId);
+      removeFromCart(
+        productId,
+        size
+      );
+
       return;
     }
 
     setCart((currentCart) =>
-      currentCart.map((item) =>
-        item.product.id === productId
-          ? {
-              ...item,
-              quantity,
-            }
-          : item
-      )
+      currentCart.map((item) => {
+        const sameProduct =
+          item.product.id ===
+          productId;
+
+        const sameSize =
+          size === undefined ||
+          item.size === size;
+
+        if (
+          sameProduct &&
+          sameSize
+        ) {
+          return {
+            ...item,
+            quantity,
+          };
+        }
+
+        return item;
+      })
     );
+  };
+
+  const openCart = () => {
+    setIsCartOpen(true);
+  };
+
+  const closeCart = () => {
+    setIsCartOpen(false);
   };
 
   return (
     <CartContext.Provider
       value={{
         cart,
+        isCartOpen,
         addToCart,
         removeFromCart,
         updateQuantity,
+        openCart,
+        closeCart,
       }}
     >
       {children}
@@ -141,7 +245,8 @@ const addToCart = (
 }
 
 export function useCart() {
-  const context = useContext(CartContext);
+  const context =
+    useContext(CartContext);
 
   if (!context) {
     throw new Error(

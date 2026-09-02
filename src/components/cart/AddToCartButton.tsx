@@ -11,6 +11,7 @@ type AddToCartButtonProps = {
   quantity: number;
   size: string;
   disabled?: boolean;
+  onInvalid?: () => void;
 };
 
 export default function AddToCartButton({
@@ -18,17 +19,26 @@ export default function AddToCartButton({
   quantity,
   size,
   disabled = false,
+  onInvalid,
 }: AddToCartButtonProps) {
-  const { addToCart } = useCart();
+  const { addToCart, openCart } = useCart();
   const { isLoggedIn } = useAuth();
   const router = useRouter();
 
+  // Check login before adding
   const handleAddToCart = () => {
+    if (!size) {
+      onInvalid?.();
+      return;
+    }
+
     if (!isLoggedIn) {
       router.push("/sign-in?redirect=/products");
       return;
     }
+
     addToCart(product, quantity, size);
+    openCart();
   };
 
   return (

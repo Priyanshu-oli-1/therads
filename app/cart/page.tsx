@@ -1,46 +1,62 @@
 "use client";
 
-import { useCart } from "@/components/cart/cartContext";
-import { useAuth } from "@/components/auth/authContext";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+
+import { useCart } from "@/components/cart/cartContext";
+import { useAuth } from "@/components/auth/authContext";
+
+import CartHeader from "@/components/cart/CartHeader";
+import CartSummary from "@/components/cart/CartSummary";
+import CartItem from "@/components/cart/CartItems";
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity } = useCart();
+  const {
+    cart,
+    removeFromCart,
+    updateQuantity,
+  } = useCart();
+
   const { isLoggedIn } = useAuth();
+
   const router = useRouter();
 
-  // Redirect to sign-in if not logged in
+  // Store gift wrap selection
+  const [giftWrap, setGiftWrap] = useState(false);
+
+  // Protect cart page
   useEffect(() => {
     if (!isLoggedIn) {
-      router.push("/sign-in?redirect=/cart");
+      router.replace(
+        "/sign-in?redirect=/cart"
+      );
     }
   }, [isLoggedIn, router]);
 
+  // Wait for authentication redirect
   if (!isLoggedIn) {
-    return null; // Don't render anything while redirecting
+    return null;
   }
 
-  // Calculate totals
-  const subtotal = cart.reduce(
-    (total, item) => total + item.product.price * item.quantity,
-    0,
-  );
-  const shipping = subtotal >= 5000 ? 0 : 199;
-  const total = shipping + subtotal;
-
+  // Show empty cart
   if (cart.length === 0) {
     return (
-      <main className="mx-auto max-w-7xl px-4 py-12">
-        <h1 className="text-3xl font-semibold">Shopping Cart</h1>
+      <main className="mx-auto min-h-[60vh] max-w-[1000px] px-5 py-10 sm:py-14">
+        <CartHeader />
 
-        <div className="mt-8">
-          <p className="text-gray-500">Your cart is currently empty.</p>
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <h2 className="font-serif text-xl text-gray-700">
+            Your cart is empty
+          </h2>
+
+          <p className="mt-2 text-sm text-gray-400">
+            Looks like you haven't added anything yet.
+          </p>
 
           <Link
             href="/products"
-            className="mt-6 inline-block bg-black px-6 py-3 text-sm text-white hover:opacity-90"
+            className="mt-6 bg-black px-8 py-3 text-xs text-white transition hover:bg-gray-800"
           >
             Continue Shopping
           </Link>
@@ -49,93 +65,60 @@ export default function CartPage() {
     );
   }
 
+  // Calculate subtotal
+  const subtotal = cart.reduce(
+    (total, item) =>
+      total +
+      item.product.price * item.quantity,
+    0
+  );
+
+  // Existing shipping rule
+  const shipping =
+    subtotal >= 5000 ? 0 : 199;
+
+  // Gift wrap price
+  const giftWrapPrice = giftWrap ? 10 : 0;
+
+  // Calculate final total
+  const total =
+    subtotal +
+    shipping +
+    giftWrapPrice;
+
   return (
-    <main className="mx-auto max-w-7xl px-4 py-12">
-      <h1 className="text-3xl font-semibold">Shopping Cart</h1>
+    <main className="mx-auto min-h-[70vh] max-w-6xl px-5 py-10 sm:px-8 lg:px-10">
+      <CartHeader />
 
-      <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_350px]">
-        {/* Cart Items */}
-        <div className="space-y-6">
-          {cart.map((item) => (
-            <div
-              key={item.product.id}
-              className="flex items-center justify-between border-b pb-6"
-            >
-              <div>
-                <h2 className="font-medium">{item.product.name}</h2>
+      <div className="mt-10 grid items-start gap-8 lg:grid-cols-[minmax(0,1.7fr)_320px]">
+        <div className="w-full">
+          <div className="grid grid-cols-[minmax(0,1.4fr)_90px_100px_100px] border-b border-gray-300 pb-4 text-[11px] font-medium uppercase tracking-[0.14em] text-gray-500 sm:text-xs">
+            <span>Product</span>
+            <span>Price</span>
+            <span>Quantity</span>
+            <span className="text-right">Total</span>
+          </div>
 
-                <p className="mt-1 text-sm text-gray-500">
-                  ₹{item.product.price.toLocaleString("en-IN")}
-                </p>
-              </div>
-
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() =>
-                    updateQuantity(
-                      item.product.id,
-                      Math.max(1, item.quantity - 1),
-                    )
-                  }
-                  className="px-2 py-1 border rounded hover:bg-gray-100"
-                >
-                  -
-                </button>
-
-                <span>{item.quantity}</span>
-
-                <button
-                  onClick={() =>
-                    updateQuantity(item.product.id, item.quantity + 1)
-                  }
-                  className="px-2 py-1 border rounded hover:bg-gray-100"
-                >
-                  +
-                </button>
-
-                <button
-                  onClick={() => removeFromCart(item.product.id)}
-                  className="text-sm text-red-600 underline hover:text-red-800"
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
+          <div className="space-y-2 pt-2">
+            {cart.map((item) => (
+              <CartItem
+                key={`${item.product.id}-${item.size}`}
+                product={item.product}
+                quantity={item.quantity}
+                size={item.size}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Order Summary */}
-        <div className="h-fit border p-6">
-          <h2 className="text-lg font-semibold">Order Summary</h2>
-
-          <div className="mt-6 space-y-4">
-            <div className="flex justify-between">
-              <span>Subtotal</span>
-              <span>₹{subtotal.toLocaleString("en-IN")}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Shipping</span>
-              <span>
-                {shipping === 0
-                  ? "Free"
-                  : `₹${shipping.toLocaleString("en-IN")}`}
-              </span>
-            </div>
-
-            <div className="border-t pt-4">
-              <div className="flex justify-between text-lg font-semibold">
-                <span>Total</span>
-                <span>₹{total.toLocaleString("en-IN")}</span>
-              </div>
-              <Link
-                href="/checkout"
-                className="mt-6 block w-full bg-black px-6 py-3 text-center text-sm font-medium text-white hover:opacity-90"
-              >
-                Proceed to Checkout
-              </Link>
-            </div>
-          </div>
+        <div className="w-full lg:pt-2">
+          <CartSummary
+            subtotal={subtotal}
+            shipping={shipping}
+            total={total}
+            giftWrap={giftWrap}
+            onGiftWrapChange={setGiftWrap}
+          />
         </div>
       </div>
     </main>

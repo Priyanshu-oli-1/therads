@@ -1,13 +1,26 @@
-import Image from "next/image";
+// app/page.tsx
+import BrandsStrip from "@/components/home/BrandsStrip";
+import DealsOfTheMonth from "@/components/home/DealsOfTheMonth";
+import FeaturedCollection from "@/components/home/FeaturedCollection";
+import InstagramGallery from "@/components/home/InstagramGallery";
+import NewArrivals from "@/components/home/NewArrivals";
+import Hero from "@/components/home/Hero";
+import Newsletter from "@/components/home/Newsletter";
+import Testimonials from "@/components/home/Testimonials";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
     <main>
-      <h1>THREADS</h1>
-      <h2>Fashion that defines you.</h2>
-      <p>Explore our latest collection.
-         Shop Collection
-      </p>
+      <Hero />
+      <BrandsStrip />
+      <DealsOfTheMonth />
+      <NewArrivals />
+      <FeaturedCollection />
+      <InstagramGallery />
+      <Testimonials />
+      <Newsletter />
+      <Footer />
     </main>
   );
 }

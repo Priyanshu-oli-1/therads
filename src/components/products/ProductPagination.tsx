@@ -11,38 +11,31 @@ export default function ProductPagination({
   totalPages,
   onPageChange,
 }: ProductPaginationProps) {
+  // Don't show pagination when there is only one page.
   if (totalPages <= 1) {
     return null;
   }
 
   return (
-    <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
-      {/* First */}
+    <nav
+      className="mt-14 flex items-center justify-center gap-5"
+      aria-label="Product pagination"
+    >
+      {/* Previous page */}
       <button
         type="button"
         disabled={page === 1}
-        onClick={() => {
-          onPageChange(1);
-        }}
-        className="rounded-md border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+        onClick={() =>
+          onPageChange(page - 1)
+        }
+        className="text-xs text-gray-400 transition hover:text-black disabled:pointer-events-none disabled:opacity-30"
+        aria-label="Previous page"
       >
-        First
+        ←
       </button>
 
-      {/* Previous */}
-      <button
-        type="button"
-        disabled={page === 1}
-        onClick={() => {
-          onPageChange(page - 1);
-        }}
-        className="rounded-md border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        Previous
-      </button>
-
-      {/* Page Numbers */}
-      <div className="flex items-center gap-2">
+      {/* Page numbers */}
+      <div className="flex items-center gap-3">
         {Array.from(
           { length: totalPages },
           (_, index) => {
@@ -52,45 +45,39 @@ export default function ProductPagination({
               <button
                 key={pageNumber}
                 type="button"
-                onClick={() => {
-                  onPageChange(pageNumber);
-                }}
-                className={`rounded-md border px-3 py-2 text-sm font-medium ${
+                onClick={() =>
+                  onPageChange(pageNumber)
+                }
+                aria-current={
                   page === pageNumber
-                    ? "bg-black text-white"
-                    : "hover:bg-gray-100"
+                    ? "page"
+                    : undefined
+                }
+                className={`flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-[9px] ${
+                  page === pageNumber
+                    ? "bg-gray-100 font-medium text-black"
+                    : "text-gray-400 hover:text-black"
                 }`}
               >
                 {pageNumber}
               </button>
             );
-          },
+          }
         )}
       </div>
 
-      {/* Next */}
+      {/* Next page */}
       <button
         type="button"
         disabled={page === totalPages}
-        onClick={() => {
-          onPageChange(page + 1);
-        }}
-        className="rounded-md border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
+        onClick={() =>
+          onPageChange(page + 1)
+        }
+        className="text-xs text-gray-400 transition hover:text-black disabled:pointer-events-none disabled:opacity-30"
+        aria-label="Next page"
       >
-        Next
+        →
       </button>
-
-      {/* Last */}
-      <button
-        type="button"
-        disabled={page === totalPages}
-        onClick={() => {
-          onPageChange(totalPages);
-        }}
-        className="rounded-md border px-4 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        Last
-      </button>
-    </div>
+    </nav>
   );
 }

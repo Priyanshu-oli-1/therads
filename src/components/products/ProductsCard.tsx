@@ -1,38 +1,54 @@
-import Link from "next/link";
 import Image from "next/image";
-import { Product } from "@/types/product";
+import Link from "next/link";
+
+import type { Product } from "@/types/product";
 
 type ProductCardProps = {
   product: Product;
 };
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductsCard({
+  product,
+}: ProductCardProps) {
   return (
-    <Link href={`/products/${product.id}`} className="group block">
-      <div>
-        {/* Product Image */}
-        <div className=" relative aspect-[3/4] overflow-hidden bg-gray-100">
-          <Image
-            src={product.image}
-            alt={product.name}
-            fill 
-            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        </div>
+    <Link
+      href={`/products/${product.id}`}
+      className="group block rounded-xl transition-transform duration-300 hover:-translate-y-1"
+    >
+      <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gray-100 shadow-sm ring-1 ring-gray-100 transition-shadow duration-300 group-hover:shadow-lg">
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          sizes="
+            (max-width: 639px) 50vw,
+            (max-width: 1023px) 33vw,
+            25vw
+          "
+          className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+      </div>
 
-        {/* Product Information */}
-        <div className="mt-4">
-          <p className="text-sm text-gray-500">
-            {product.category}
-          </p>
+      <div className="pt-3">
+        <h2 className="text-sm font-medium leading-5 text-gray-900 sm:text-base">
+          {product.name}
+        </h2>
 
-          <h2 className="mt-1 text-base font-medium">
-            {product.name}
-          </h2>
+        <p className="mt-1 text-sm text-gray-700">
+          ₹{product.price.toLocaleString("en-IN")}
+        </p>
 
-          <p className="mt-2 text-base font-semibold">
-            ₹{product.price.toLocaleString("en-IN")}
-          </p>
+        {/* Figma-style color indicators.
+            These remain visual until product color data is added. */}
+        <div
+          className="mt-2 flex items-center gap-1.5"
+          aria-hidden="true"
+        >
+          <span className="h-2.5 w-2.5 rounded-full border border-gray-400 bg-white" />
+
+          <span className="h-2.5 w-2.5 rounded-full bg-black" />
+
+          <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
         </div>
       </div>
     </Link>

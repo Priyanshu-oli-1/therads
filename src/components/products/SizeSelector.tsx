@@ -13,33 +13,38 @@ export default function SizeSelector({
 }: SizeSelectorProps) {
   return (
     <div>
-      <h2 className="text-sm font-semibold">
-        Select Size
+      {/* Size heading */}
+      <h2 className="text-sm font-semibold text-gray-900">
+        Size
+        {selectedSize && (
+          <span className="font-normal">
+            : {selectedSize}
+          </span>
+        )}
       </h2>
 
-      <div className="mt-3 flex flex-wrap gap-3">
-        {sizes.map((size) => (
-          <button
-            key={size}
-            type="button"
-            onClick={() => onChange(size)}
-            aria-pressed={selectedSize === size}
-            className={`rounded-md border px-5 py-2 text-sm font-medium ${
-              selectedSize === size
-                ? "bg-black text-white"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            {size}
-          </button>
-        ))}
-      </div>
+      {/* Size buttons */}
+      <div className="mt-3 flex flex-wrap gap-2.5">
+        {sizes.map((size) => {
+          const isSelected = selectedSize === size;
 
-      <p className="mt-3 text-sm text-gray-500">
-        {selectedSize
-          ? `Selected size: ${selectedSize}`
-          : "Please select a size."}
-      </p>
+          return (
+            <button
+              key={size}
+              type="button"
+              onClick={() => onChange(size)}
+              aria-pressed={isSelected}
+              className={`flex h-10 min-w-11 items-center justify-center border px-4 text-sm font-medium transition ${
+                isSelected
+                  ? "border-black bg-black text-white"
+                  : "border-gray-200 bg-white text-gray-800 hover:border-black"
+              }`}
+            >
+              {size}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

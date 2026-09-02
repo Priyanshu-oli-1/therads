@@ -1,4 +1,5 @@
 import { products } from "@/data/products";
+
 import ProductList from "@/components/products/ProductList";
 import FeaturedCollection from "@/components/home/FeaturedCollection";
 import InstagramSection from "@/components/home/InstagramGallery";
@@ -10,6 +11,7 @@ type ProductsPageProps = {
     search?: string;
     category?: string;
     sort?: string;
+    price?: string;
     page?: string;
     limit?: string;
   }>;
@@ -19,60 +21,55 @@ export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
   const params = await searchParams;
-  const initialPage = Math.max(1, Number(params.page ?? "1"));
 
-  const initialItemsPerPage = [4, 8, 12].includes(Number(params.limit))
-    ? Number(params.limit)
-    : 4;
-  const allowedLimits = [4, 8, 12];
+  // Read the requested page from the URL.
+  const requestedPage = Number(params.page ?? "1");
 
-  const requestedLimit = Number(params.limit);
+  // Keep the existing 4 / 8 / 12 items-per-page functionality.
+  const requestedLimit = Number(params.limit ?? "4");
 
-  const itemsPerPage = allowedLimits.includes(requestedLimit)
+  const initialPage = Number.isFinite(requestedPage)
+    ? Math.max(1, requestedPage)
+    : 1;
+
+  const initialItemsPerPage = [4, 8, 12].includes(requestedLimit)
     ? requestedLimit
     : 4;
 
-  
-
   return (
     <>
-      <main className="mx-auto max-w-7xl px-6 py-16">
-        <h1 className="text-4xl font-bold">Shop</h1>
+      <main className="mx-auto w-full max-w-7xl px-6 py-10 md:px-8 md:py-6">
+        <header className="mb-8 text-center">
+          <h1 className="font-serif text-5xl font-semibold tracking-tight md:text-6xl">
+            Fashion
+          </h1>
 
-        <p className="mt-4 text-gray-600">
-          Explore our latest fashion collection.
-        </p>
+          <nav
+            aria-label="Breadcrumb"
+            className="mt-3 flex items-center justify-center gap-2 text-[10px] text-gray-500 md:text-sm"
+          >
+            <span>Home</span>
+            <span>›</span>
+            <span className="text-gray-600">Fashion</span>
+          </nav>
+        </header>
 
-        <p className="mt-2 text-sm text-gray-500">{products.length} products</p>
-
-        <div className="mt-10">
-          <ProductList
-            products={products}
-            initialSearch={params.search ?? ""}
-            initialCategory={params.category ?? ""}
-            initialSort={params.sort ?? ""}
-            initialPage={initialPage}
-            initialItemsPerPage={initialItemsPerPage}
-          />
-        </div>
+        {/* Product filtering, sorting, grid and pagination */}
+        <ProductList
+          products={products}
+          initialSearch={params.search ?? ""}
+          initialCategory={params.category ?? ""}
+          initialSort={params.sort ?? ""}
+          initialPrice={params.price ?? ""}
+          initialPage={initialPage}
+          initialItemsPerPage={initialItemsPerPage}
+        />
       </main>
 
-      {/* Featured Collection Section */}
-      <div>
-        <FeaturedCollection />
-      </div>
-
-      {/* Instagram Gallery Section */}
-      <div>
-        <InstagramSection />
-      </div>
-
-      {/* Newsletter Section */}
-      <div>
-        <Newsletter />
-      </div>
-
-      {/* Footer */}
+      {/* Existing sections are preserved. */}
+      <FeaturedCollection />
+      <InstagramSection />
+      <Newsletter />
       <Footer />
     </>
   );

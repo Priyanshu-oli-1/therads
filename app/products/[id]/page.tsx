@@ -21,7 +21,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
   return (
     <>
-      <main className="mx-auto max-w-7xl px-6 py-16">
+      <main className="mx-auto max-w-7xl px-6 py-6">
         <ProductDetails product={product} />
       </main>
 

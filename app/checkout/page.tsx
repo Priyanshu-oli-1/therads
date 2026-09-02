@@ -2,7 +2,9 @@
 
 import { checkoutSchema } from "@/schema/validation/checkout";
 import { useCart } from "@/components/cart/cartContext";
-import { useState } from "react";
+import { useAuth } from "@/components/auth/authContext";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import z from "zod";
 
 export default function CheckoutPage() {
@@ -14,6 +16,20 @@ export default function CheckoutPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const { cart } = useCart();
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
+
+  // Redirect to sign-in if not logged in
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/sign-in?redirect=/checkout");
+    }
+  }, [isLoggedIn, router]);
+
+  if (!isLoggedIn) {
+    return null;
+  }
+
   if (cart.length === 0) {
     return (
       <main className="mx-auto max-w-xl px-4 py-12">
@@ -33,7 +49,7 @@ export default function CheckoutPage() {
 
   const total = subtotal + shipping;
 
-function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
   e.preventDefault();
 
   const result = checkoutSchema.safeParse({

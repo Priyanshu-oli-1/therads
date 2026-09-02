@@ -1,5 +1,6 @@
 // components/home/Hero.tsx
 import Image from "next/image";
+import Link from "next/link";
 import { ShoppingCart, ArrowUp } from "lucide-react";
 
 export default function Hero() {
@@ -45,9 +46,11 @@ export default function Hero() {
               <p className="text-xs tracking-widest text-gray-500 mt-3">
                 NEW COLLECTION
               </p>
-              <button className="mt-4 bg-black text-white text-xs font-semibold tracking-wide px-8 py-3.5 rounded-md hover:opacity-85 transition-opacity">
-                SHOP NOW
-              </button>
+              <Link href="/products">
+                <button className="mt-4 bg-black text-white text-xs font-semibold tracking-wide px-8 py-3.5 rounded-md hover:opacity-85 transition-opacity">
+                  SHOP NOW
+                </button>
+              </Link>
             </div>
 
             <div className="relative h-[110px] md:h-[130px] rounded-lg overflow-hidden bg-pink-100">
@@ -78,12 +81,6 @@ export default function Hero() {
             aria-label="Cart"
           >
             <ShoppingCart size={18} />
-          </button>
-          <button
-            className="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full hover:border-black transition-colors"
-            aria-label="Scroll to top"
-          >
-            <ArrowUp size={16} />
           </button>
         </div>
       </div>

@@ -3,7 +3,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
+import { useCart } from "../cart/cartContext";
+import { useAuth } from "../auth/authContext";
+import { useRouter } from "next/navigation";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -12,8 +15,26 @@ const NAV_LINKS = [
   { label: "Packages", href: "/packages" },
 ];
 
+const LOGGED_IN_LINKS = [
+  { label: "Store", href: "/store" },
+  { label: "Profile", href: "/profile" },
+];
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { cart } = useCart();
+  const { isLoggedIn, logout } = useAuth();
+  const router = useRouter();
+
+  const handleCartClick = () => {
+    if (!isLoggedIn) {
+      router.push("/sign-in?redirect=/cart");
+    } else {
+      router.push("/cart");
+    }
+  };
+
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <header className="relative bg-white border-b border-gray-100">
@@ -38,25 +59,64 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
+          
+          {/* Show Store and Profile only if logged in */}
+          {isLoggedIn && LOGGED_IN_LINKS.map((link) => (
+            <li key={link.label}>
+              <Link
+                href={link.href}
+                className="text-sm text-gray-400 hover:text-black transition-colors"
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
         </ul>
 
         {/* Auth buttons (desktop) — grouped, close together */}
         <div className="hidden md:flex items-center gap-3">
-          <Link
-            href="/sign-in"
-            className="text-sm font-medium text-gray-600 border border-gray-300
-                       px-6 py-3 rounded-md hover:border-black hover:text-black
-                       transition-colors"
+          {/* Cart Button */}
+          <button
+            onClick={handleCartClick}
+            className="relative text-gray-600 hover:text-black transition-colors"
+            aria-label="Shopping cart"
           >
-            Sign In
-          </Link>
-          <Link
-            href="/sign-up"
-            className="text-sm font-medium bg-black text-white px-7 py-3 rounded-md
-                       hover:opacity-85 transition-opacity"
-          >
-            Sign Up
-          </Link>
+            <ShoppingCart size={20} />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
+          {isLoggedIn ? (
+            <button
+              onClick={logout}
+              className="text-sm font-medium text-gray-600 border border-gray-300
+                         px-6 py-3 rounded-md hover:border-black hover:text-black
+                         transition-colors"
+            >
+              Logout
+            </button>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="text-sm font-medium text-gray-600 border border-gray-300
+                           px-6 py-3 rounded-md hover:border-black hover:text-black
+                           transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                href="/sign-up"
+                className="text-sm font-medium bg-black text-white px-7 py-3 rounded-md
+                           hover:opacity-85 transition-opacity"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile menu toggle */}
@@ -82,24 +142,69 @@ export default function Navbar() {
               </Link>
             ))}
 
+            {/* Show Store and Profile only if logged in - Mobile */}
+            {isLoggedIn && LOGGED_IN_LINKS.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="text-sm text-gray-500 hover:text-black transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+
             <div className="flex items-center gap-3">
-              <Link
-                href="/sign-in"
-                className="text-sm font-medium text-gray-600 border border-gray-300
-                           px-6 py-2.5 rounded-md hover:border-black hover:text-black
-                           transition-colors"
-                onClick={() => setIsOpen(false)}
+              {/* Mobile Cart Button */}
+              <button
+                onClick={() => {
+                  handleCartClick();
+                  setIsOpen(false);
+                }}
+                className="relative text-gray-600 hover:text-black transition-colors"
+                aria-label="Shopping cart"
               >
-                Sign In
-              </Link>
-              <Link
-                href="/sign-up"
-                className="text-sm font-medium bg-black text-white px-7 py-2.5 rounded-md
-                           hover:opacity-85 transition-opacity"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign Up
-              </Link>
+                <ShoppingCart size={20} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </button>
+
+              {isLoggedIn ? (
+                <button
+                  onClick={() => {
+                    logout();
+                    setIsOpen(false);
+                  }}
+                  className="text-sm font-medium text-gray-600 border border-gray-300
+                             px-6 py-2.5 rounded-md hover:border-black hover:text-black
+                             transition-colors"
+                >
+                  Logout
+                </button>
+              ) : (
+                <>
+                  <Link
+                    href="/sign-in"
+                    className="text-sm font-medium text-gray-600 border border-gray-300
+                               px-6 py-2.5 rounded-md hover:border-black hover:text-black
+                               transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/sign-up"
+                    className="text-sm font-medium bg-black text-white px-7 py-2.5 rounded-md
+                               hover:opacity-85 transition-opacity"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

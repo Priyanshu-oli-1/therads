@@ -2,7 +2,6 @@
 
 import { useMemo, useState, useEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import BackToTop from "./BackToTop";
 import ProductPagination from "./ProductPagination";
 import type { Product } from "@/types/product";
 import ProductsCard from "./ProductsCard";
@@ -286,9 +285,6 @@ export default function ProductList({
               });
             }}
           />
-          <div className="mt-6 flex justify-center">
-            <BackToTop />
-          </div>
         </>
       )}
     </>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -55,12 +56,14 @@ export default function DealsOfTheMonth() {
             </p>
 
             {/* Buy Now */}
+           <Link href={"/products"}>
             <button
               type="button"
               className="mt-7 bg-black px-9 py-3 text-[11px] font-medium text-white transition hover:bg-gray-800 rounded-2xl"
             >
               Buy Now
             </button>
+           </Link>
 
             {/* Countdown */}
             <div className="mt-7">

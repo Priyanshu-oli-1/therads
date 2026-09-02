@@ -1,11 +1,28 @@
 "use client";
 
 import { useCart } from "@/components/cart/cartContext";
+import { useAuth } from "@/components/auth/authContext";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity } = useCart();
-  //total worth of product calculated here
+  const { isLoggedIn } = useAuth();
+  const router = useRouter();
+
+  // Redirect to sign-in if not logged in
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/sign-in?redirect=/cart");
+    }
+  }, [isLoggedIn, router]);
+
+  if (!isLoggedIn) {
+    return null; // Don't render anything while redirecting
+  }
+
+  // Calculate totals
   const subtotal = cart.reduce(
     (total, item) => total + item.product.price * item.quantity,
     0,
@@ -23,7 +40,7 @@ export default function CartPage() {
 
           <Link
             href="/products"
-            className="mt-6 inline-block bg-black px-6 py-3 text-sm text-white"
+            className="mt-6 inline-block bg-black px-6 py-3 text-sm text-white hover:opacity-90"
           >
             Continue Shopping
           </Link>
@@ -60,6 +77,7 @@ export default function CartPage() {
                       Math.max(1, item.quantity - 1),
                     )
                   }
+                  className="px-2 py-1 border rounded hover:bg-gray-100"
                 >
                   -
                 </button>
@@ -70,13 +88,14 @@ export default function CartPage() {
                   onClick={() =>
                     updateQuantity(item.product.id, item.quantity + 1)
                   }
+                  className="px-2 py-1 border rounded hover:bg-gray-100"
                 >
                   +
                 </button>
 
                 <button
                   onClick={() => removeFromCart(item.product.id)}
-                  className="text-sm underline"
+                  className="text-sm text-red-600 underline hover:text-red-800"
                 >
                   Remove
                 </button>
@@ -107,15 +126,14 @@ export default function CartPage() {
             <div className="border-t pt-4">
               <div className="flex justify-between text-lg font-semibold">
                 <span>Total</span>
-
                 <span>₹{total.toLocaleString("en-IN")}</span>
               </div>
               <Link
-              href="/checkout"
-              className="mt-6 block w-full bg-black px-6 py-3 text-center text-sm font-medium text-white"
-            >
-              Proceed to Checkout
-            </Link>
+                href="/checkout"
+                className="mt-6 block w-full bg-black px-6 py-3 text-center text-sm font-medium text-white hover:opacity-90"
+              >
+                Proceed to Checkout
+              </Link>
             </div>
           </div>
         </div>

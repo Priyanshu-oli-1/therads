@@ -3,33 +3,38 @@
 import Link from "next/link";
 import Image from "next/image";
 
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "@/redux/store";
+import {
+  removeFromCart,
+  updateQuantity,
+} from "@/redux/slices/cartSlice";
+
 import { useCart } from "./cartContext";
 
 export default function CartDrawer() {
-  const {
-    cart,
-    isCartOpen,
-    closeCart,
-    removeFromCart,
-    updateQuantity,
-  } = useCart();
+  const dispatch = useDispatch();
+
+  // Redux now owns cart products
+  const cart = useSelector(
+    (state: RootState) => state.cart.items
+  );
+
+  // Context temporarily owns drawer open/close state
+  const { isCartOpen, closeCart } = useCart();
 
   if (!isCartOpen) {
     return null;
   }
 
-  const subtotal =
-    cart.reduce(
-      (total, item) =>
-        total +
-        item.product.price *
-          item.quantity,
-      0
-    );
+  const subtotal = cart.reduce(
+    (total, item) =>
+      total + item.product.price * item.quantity,
+    0
+  );
 
   return (
     <div className="fixed inset-0 z-50">
-
       {/* Overlay */}
       <button
         type="button"
@@ -40,7 +45,6 @@ export default function CartDrawer() {
 
       {/* Drawer */}
       <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-xl">
-
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-200 px-6 py-5">
           <div>
@@ -50,9 +54,7 @@ export default function CartDrawer() {
 
             <p className="mt-1 text-xs text-gray-500">
               {cart.length}{" "}
-              {cart.length === 1
-                ? "item"
-                : "items"}
+              {cart.length === 1 ? "item" : "items"}
             </p>
           </div>
 
@@ -126,10 +128,12 @@ export default function CartDrawer() {
                       <button
                         type="button"
                         onClick={() =>
-                          updateQuantity(
-                            item.product.id,
-                            item.quantity - 1,
-                            item.size
+                          dispatch(
+                            updateQuantity({
+                              productId: item.product.id,
+                              size: item.size,
+                              quantity: item.quantity - 1,
+                            })
                           )
                         }
                         className="flex h-7 w-7 items-center justify-center border border-gray-300"
@@ -144,10 +148,12 @@ export default function CartDrawer() {
                       <button
                         type="button"
                         onClick={() =>
-                          updateQuantity(
-                            item.product.id,
-                            item.quantity + 1,
-                            item.size
+                          dispatch(
+                            updateQuantity({
+                              productId: item.product.id,
+                              size: item.size,
+                              quantity: item.quantity + 1,
+                            })
                           )
                         }
                         className="flex h-7 w-7 items-center justify-center border border-gray-300"
@@ -161,9 +167,11 @@ export default function CartDrawer() {
                   <button
                     type="button"
                     onClick={() =>
-                      removeFromCart(
-                        item.product.id,
-                        item.size
+                      dispatch(
+                        removeFromCart({
+                          productId: item.product.id,
+                          size: item.size,
+                        })
                       )
                     }
                     className="text-xs text-gray-400 hover:text-black"
@@ -179,17 +187,13 @@ export default function CartDrawer() {
         {/* Footer */}
         {cart.length > 0 && (
           <div className="border-t border-gray-200 px-6 py-6">
-
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-500">
                 Subtotal
               </span>
 
               <span className="font-medium">
-                ₹
-                {subtotal.toLocaleString(
-                  "en-IN"
-                )}
+                ₹{subtotal.toLocaleString("en-IN")}
               </span>
             </div>
 

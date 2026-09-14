@@ -2,9 +2,14 @@
 
 import Image from "next/image";
 
-import type { Product } from "@/types/product";
+import { useDispatch } from "react-redux";
 
-import { useCart } from "./cartContext";
+import type { Product } from "@/types/product";
+import {
+  removeFromCart,
+  updateQuantity,
+} from "@/redux/slices/cartSlice";
+
 import CartQuantity from "./CartQuantity";
 
 type CartItemProps = {
@@ -18,17 +23,13 @@ export default function CartItem({
   quantity,
   size,
 }: CartItemProps) {
-  const {
-    removeFromCart,
-    updateQuantity,
-  } = useCart();
+  const dispatch = useDispatch();
 
-  // Calculate this item's total
   const itemTotal = product.price * quantity;
 
   return (
     <div className="grid grid-cols-[minmax(0,1.4fr)_90px_100px_100px] items-start border-t border-gray-200 py-4">
-      <div className="flex gap-4 flex-col">
+      <div className="flex flex-col gap-4">
         <div className="relative h-[110px] w-[88px] shrink-0 overflow-hidden rounded-md bg-gray-100">
           <Image
             src={product.image}
@@ -39,7 +40,7 @@ export default function CartItem({
           />
         </div>
 
-        <div className="pt-1 ">
+        <div className="pt-1">
           <h2 className="max-w-[180px] text-sm font-medium leading-5 text-black">
             {product.name}
           </h2>
@@ -50,7 +51,14 @@ export default function CartItem({
 
           <button
             type="button"
-            onClick={() => removeFromCart(product.id, size)}
+            onClick={() =>
+              dispatch(
+                removeFromCart({
+                  productId: product.id,
+                  size,
+                })
+              )
+            }
             className="mt-3 text-xs text-gray-500 underline-offset-2 transition hover:text-black hover:underline"
           >
             Remove
@@ -65,8 +73,24 @@ export default function CartItem({
       <div className="pt-1">
         <CartQuantity
           quantity={quantity}
-          onDecrease={() => updateQuantity(product.id, quantity - 1, size)}
-          onIncrease={() => updateQuantity(product.id, quantity + 1, size)}
+          onDecrease={() =>
+            dispatch(
+              updateQuantity({
+                productId: product.id,
+                size,
+                quantity: quantity - 1,
+              })
+            )
+          }
+          onIncrease={() =>
+            dispatch(
+              updateQuantity({
+                productId: product.id,
+                size,
+                quantity: quantity + 1,
+              })
+            )
+          }
         />
       </div>
 

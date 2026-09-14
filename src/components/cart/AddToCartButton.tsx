@@ -2,8 +2,10 @@
 
 import Button from "@/components/ui/Button";
 import type { Product } from "@/types/product";
-import { useCart } from "./cartContext";
+import { useDispatch } from "react-redux";
+import { addToCart } from "@/redux/slices/cartSlice";
 import { useAuth } from "../auth/authContext";
+import { useCart } from "./cartContext";
 import { useRouter } from "next/navigation";
 
 type AddToCartButtonProps = {
@@ -21,11 +23,11 @@ export default function AddToCartButton({
   disabled = false,
   onInvalid,
 }: AddToCartButtonProps) {
-  const { addToCart, openCart } = useCart();
+  const dispatch = useDispatch();
   const { isLoggedIn } = useAuth();
+  const { openCart } = useCart();
   const router = useRouter();
 
-  // Check login before adding
   const handleAddToCart = () => {
     if (!size) {
       onInvalid?.();
@@ -37,7 +39,14 @@ export default function AddToCartButton({
       return;
     }
 
-    addToCart(product, quantity, size);
+    dispatch(
+      addToCart({
+        product,
+        quantity,
+        size,
+      })
+    );
+
     openCart();
   };
 

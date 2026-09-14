@@ -16,7 +16,7 @@ export default function AuthLayout({
         =========================================== */}
         <div className="relative hidden min-h-screen lg:block">
           <Image
-            src="/images/auth/auth-image.jpg"
+            src="/images/auth/image.png"
             alt="THREADS fashion collection"
             fill
             priority

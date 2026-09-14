@@ -1,11 +1,6 @@
 "use client";
 
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 export type AuthUser = {
   id: string;
@@ -29,52 +24,29 @@ type AuthContextType = {
   isLoggedIn: boolean;
   user: AuthUser | null;
 
-  signin: (
-    email: string,
-    password: string
-  ) => SignInResult;
+  signin: (email: string, password: string) => SignInResult;
 
-  signup: (
-    email: string,
-    name: string,
-    password: string
-  ) => boolean;
+  signup: (email: string, name: string, password: string) => boolean;
 
   verifyEmail: () => void;
 
-  resetPassword: (
-    email: string,
-    password: string
-  ) => boolean;
+  resetPassword: (email: string, password: string) => boolean;
 
-  updateProfile: (
-    name: string,
-    email: string,
-    phone: string
-  ) => boolean;
+  updateProfile: (name: string, email: string, phone: string) => boolean;
 
   logout: () => void;
 };
 
-const AuthContext = createContext<
-  AuthContextType | undefined
->(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AUTH_STORAGE_KEY = "threads-auth";
 
-export function AuthProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const [isLoggedIn, setIsLoggedIn] =
-    useState(false);
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [user, setUser] =
-    useState<AuthUser | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
 
-  const [isLoaded, setIsLoaded] =
-    useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   /*
     Load saved authentication information
@@ -82,32 +54,21 @@ export function AuthProvider({
   */
   useEffect(() => {
     try {
-      const savedAuth =
-        localStorage.getItem(
-          AUTH_STORAGE_KEY
-        );
+      const savedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
 
       if (!savedAuth) {
         return;
       }
 
-      const authData =
-        JSON.parse(savedAuth);
+      const authData = JSON.parse(savedAuth);
 
       if (authData.user) {
         setUser(authData.user);
 
-        setIsLoggedIn(
-          Boolean(
-            authData.user.emailVerified
-          )
-        );
+        setIsLoggedIn(Boolean(authData.user.emailVerified));
       }
     } catch (error) {
-      console.error(
-        "Failed to load auth:",
-        error
-      );
+      console.error("Failed to load auth:", error);
     } finally {
       setIsLoaded(true);
     }
@@ -116,24 +77,14 @@ export function AuthProvider({
   /*
     Create a new account.
   */
-  const signup = (
-    email: string,
-    name: string,
-    password: string
-  ) => {
+  const signup = (email: string, name: string, password: string) => {
     try {
-      const savedAuth =
-        localStorage.getItem(
-          AUTH_STORAGE_KEY
-        );
+      const savedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
 
       if (savedAuth) {
-        const authData =
-          JSON.parse(savedAuth);
+        const authData = JSON.parse(savedAuth);
 
-        if (
-          authData.user?.email === email
-        ) {
+        if (authData.user?.email === email) {
           return false;
         }
       }
@@ -150,7 +101,7 @@ export function AuthProvider({
         AUTH_STORAGE_KEY,
         JSON.stringify({
           user: newUser,
-        })
+        }),
       );
 
       setUser(newUser);
@@ -158,10 +109,7 @@ export function AuthProvider({
 
       return true;
     } catch (error) {
-      console.error(
-        "Failed to create account:",
-        error
-      );
+      console.error("Failed to create account:", error);
 
       return false;
     }
@@ -170,15 +118,9 @@ export function AuthProvider({
   /*
     Authenticate an existing user.
   */
-  const signin = (
-    email: string,
-    password: string
-  ): SignInResult => {
+  const signin = (email: string, password: string): SignInResult => {
     try {
-      const savedAuth =
-        localStorage.getItem(
-          AUTH_STORAGE_KEY
-        );
+      const savedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
 
       if (!savedAuth) {
         return {
@@ -187,11 +129,9 @@ export function AuthProvider({
         };
       }
 
-      const authData =
-        JSON.parse(savedAuth);
+      const authData = JSON.parse(savedAuth);
 
-      const savedUser: AuthUser =
-        authData.user;
+      const savedUser: AuthUser = authData.user;
 
       if (!savedUser) {
         return {
@@ -200,10 +140,7 @@ export function AuthProvider({
         };
       }
 
-      if (
-        savedUser.email !== email ||
-        savedUser.password !== password
-      ) {
+      if (savedUser.email !== email || savedUser.password !== password) {
         return {
           success: false,
           reason: "invalid",
@@ -227,10 +164,7 @@ export function AuthProvider({
         success: true,
       };
     } catch (error) {
-      console.error(
-        "Failed to sign in:",
-        error
-      );
+      console.error("Failed to sign in:", error);
 
       return {
         success: false,
@@ -256,7 +190,7 @@ export function AuthProvider({
       AUTH_STORAGE_KEY,
       JSON.stringify({
         user: verifiedUser,
-      })
+      }),
     );
 
     setUser(verifiedUser);
@@ -266,11 +200,7 @@ export function AuthProvider({
   /*
     Update profile information.
   */
-  const updateProfile = (
-    name: string,
-    email: string,
-    phone: string
-  ) => {
+  const updateProfile = (name: string, email: string, phone: string) => {
     if (!user) {
       return false;
     }
@@ -287,17 +217,14 @@ export function AuthProvider({
         AUTH_STORAGE_KEY,
         JSON.stringify({
           user: updatedUser,
-        })
+        }),
       );
 
       setUser(updatedUser);
 
       return true;
     } catch (error) {
-      console.error(
-        "Failed to update profile:",
-        error
-      );
+      console.error("Failed to update profile:", error);
 
       return false;
     }
@@ -306,30 +233,19 @@ export function AuthProvider({
   /*
     Reset password.
   */
-  const resetPassword = (
-    email: string,
-    password: string
-  ) => {
+  const resetPassword = (email: string, password: string) => {
     try {
-      const savedAuth =
-        localStorage.getItem(
-          AUTH_STORAGE_KEY
-        );
+      const savedAuth = localStorage.getItem(AUTH_STORAGE_KEY);
 
       if (!savedAuth) {
         return false;
       }
 
-      const authData =
-        JSON.parse(savedAuth);
+      const authData = JSON.parse(savedAuth);
 
-      const savedUser: AuthUser =
-        authData.user;
+      const savedUser: AuthUser = authData.user;
 
-      if (
-        !savedUser ||
-        savedUser.email !== email
-      ) {
+      if (!savedUser || savedUser.email !== email) {
         return false;
       }
 
@@ -342,17 +258,14 @@ export function AuthProvider({
         AUTH_STORAGE_KEY,
         JSON.stringify({
           user: updatedUser,
-        })
+        }),
       );
 
       setUser(updatedUser);
 
       return true;
     } catch (error) {
-      console.error(
-        "Failed to reset password:",
-        error
-      );
+      console.error("Failed to reset password:", error);
 
       return false;
     }
@@ -364,10 +277,8 @@ export function AuthProvider({
   const logout = () => {
     setUser(null);
     setIsLoggedIn(false);
-
-    localStorage.removeItem(
-      "threads-cart"
-    );
+    localStorage.removeItem(AUTH_STORAGE_KEY);
+    localStorage.removeItem("threads-cart");
   };
 
   const value: AuthContextType = {
@@ -385,21 +296,14 @@ export function AuthProvider({
     return null;
   }
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
-  const context =
-    useContext(AuthContext);
+  const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error(
-      "useAuth must be used within AuthProvider"
-    );
+    throw new Error("useAuth must be used within AuthProvider");
   }
 
   return context;

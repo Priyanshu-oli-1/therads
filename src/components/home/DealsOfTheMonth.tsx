@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -40,27 +41,29 @@ export default function DealsOfTheMonth() {
   };
 
   return (
-    <section className="w-full bg-[#fafafa] py-16">
+    <section id="deals" className="w-full min-h-screen bg-[#fafafa] py-16 scroll-mt-28">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="flex min-h-[500px] items-center gap-8 overflow-hidden">
+        <div className="flex min-h-[800px] items-center gap-8 overflow-hidden">
           {/* ================= LEFT CONTENT ================= */}
-          <div className="w-[30%] shrink-0">
-            <h2 className="text-5xl font-semibold tracking-tight">
+          <div className="w-[30%]  shrink-0">
+            <h2 className="text-7xl font-semibold tracking-tight">
               Deals Of The Month
             </h2>
 
-            <p className="mt-4 max-w-[280px] text-xs leading-6 text-gray-400">
+            <p className="mt-4 max-w-[400px] text-sm leading-6 text-gray-400">
               Get ready for our biggest deals of the month. Discover stylish
               fashion pieces at special prices for a limited time.
             </p>
 
             {/* Buy Now */}
+           <Link href={"/products"}>
             <button
               type="button"
-              className="mt-7 bg-black px-9 py-3 text-[11px] font-medium text-white transition hover:bg-gray-800 rounded-2xl"
+              className="mt-7 bg-black px-9 py-3 text-[15px] font-medium text-white transition hover:bg-gray-800 rounded-2xl"
             >
               Buy Now
             </button>
+           </Link>
 
             {/* Countdown */}
             <div className="mt-7">
@@ -112,12 +115,12 @@ export default function DealsOfTheMonth() {
             </div>
 
             {/* Navigation */}
-            <div className="mt-8 flex justify-end gap-2 mr-4">
+            <div className="mt-15 flex justify-end gap-2 mr-4">
               <button
                 type="button"
                 onClick={previousSlide}
                 aria-label="Previous deal"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm shadow-sm transition hover:bg-gray-100"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-sm shadow-sm transition hover:bg-gray-100"
               >
                 ←
               </button>
@@ -126,7 +129,7 @@ export default function DealsOfTheMonth() {
                 type="button"
                 onClick={nextSlide}
                 aria-label="Next deal"
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm shadow-sm transition hover:bg-gray-100"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-sm shadow-sm transition hover:bg-gray-100"
               >
                 →
               </button>
@@ -136,7 +139,7 @@ export default function DealsOfTheMonth() {
           {/* ================= RIGHT PRODUCTS ================= */}
           <div className="relative flex min-w-0 flex-1 items-center gap-3">
             {/* Main Card */}
-            <div className="relative h-[470px] w-[45%] shrink-0 overflow-hidden bg-gray-100">
+            <div className="relative h-[700px] w-[45%] shrink-0 overflow-hidden bg-gray-100">
               <Image
                 src={deals[activeSlide].image}
                 alt={deals[activeSlide].alt}
@@ -160,7 +163,7 @@ export default function DealsOfTheMonth() {
             </div>
 
             {/* Second Image */}
-            <div className="relative h-[400px] w-[30%] shrink-0 overflow-hidden bg-gray-100">
+            <div className="relative h-[600px] w-[30%] shrink-0 overflow-hidden bg-gray-100">
               <Image
                 src={deals[(activeSlide + 1) % deals.length].image}
                 alt={deals[(activeSlide + 1) % deals.length].alt}
@@ -170,7 +173,7 @@ export default function DealsOfTheMonth() {
             </div>
 
             {/* Third Image */}
-            <div className="relative h-[400px] w-[30%] shrink-0 overflow-hidden bg-gray-100">
+            <div className="relative h-[500px] w-[30%] shrink-0 overflow-hidden bg-gray-100">
               <Image
                 src={deals[(activeSlide + 2) % deals.length].image}
                 alt={deals[(activeSlide + 2) % deals.length].alt}

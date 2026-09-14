@@ -1,11 +1,11 @@
 const images = [
-  "/images/instagram/image.png",
-  "/images/instagram/image copy.png",
-  "/images/instagram/image copy 2.png",
-  "/images/instagram/image copy 3.png",
-  "/images/instagram/image copy 4.png",
-  "/images/instagram/image copy 5.png",
-  "/images/instagram/image copy 6.png",
+  "/images/instagram/instagram1.png",
+  "/images/instagram/instagram2.png",
+  "/images/instagram/instagram3.png",
+  "/images/instagram/instagram4.png",
+  "/images/instagram/instagram5.png",
+  "/images/instagram/instagram6.png",
+  "/images/instagram/instagram7.png",
 ];
 
 export default function InstagramSection() {
@@ -13,7 +13,7 @@ export default function InstagramSection() {
     <section className="w-full overflow-hidden bg-white">
       {/* Heading */}
       <div className="flex flex-col items-center px-4 pt-12 pb-14 text-center sm:pt-16 sm:pb-16">
-        <h2 className="font-serif text-2xl font-semibold text-gray-700 sm:text-3xl">
+        <h2 className="font-serif text-2xl font-semibold text-gray-700 sm:text-4xl">
           Follow Us On Instagram
         </h2>
 
@@ -37,8 +37,8 @@ export default function InstagramSection() {
                 w-[14.2857%]
                 ${
                   isLarge
-                    ? "h-[190px] sm:h-[240px] lg:h-[285px]"
-                    : "h-[155px] sm:h-[200px] lg:h-[270px]"
+                    ? "h-[190px] sm:h-[240px] lg:h-[450px]"
+                    : "h-[155px] sm:h-[200px] lg:h-[350px]"
                 }
               `}
             >

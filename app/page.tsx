@@ -8,9 +8,13 @@ import Hero from "@/components/home/Hero";
 import Newsletter from "@/components/home/Newsletter";
 import Testimonials from "@/components/home/Testimonials";
 import Footer from "@/components/layout/Footer";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { AuthProvider } from "@/components/auth/authContext";
 
 export default function Home() {
   return (
+    <ProtectedRoute>
+    <AuthProvider>
     <main>
       <Hero />
       <BrandsStrip />
@@ -22,5 +26,7 @@ export default function Home() {
       <Newsletter />
       <Footer />
     </main>
+    </AuthProvider>
+    </ProtectedRoute>
   );
 }

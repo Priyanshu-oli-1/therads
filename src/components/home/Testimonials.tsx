@@ -8,7 +8,7 @@ const testimonials = [
     id: 1,
     name: "James K.",
     role: "Traveler",
-    image: "/images/reviews/image copy.png",
+    image: "/images/reviews/customer1.png",
     review:
       "You won't regret it. I would like to personally thank you for your outstanding product. Absolutely wonderful!",
     rating: 5,
@@ -17,7 +17,7 @@ const testimonials = [
     id: 2,
     name: "Sarah M.",
     role: "Designer",
-    image: "/images/reviews/image copy.png",
+    image: "/images/reviews/customer2.png",
     review:
       "I was looking for something beautiful and comfortable. The quality was amazing and the delivery was very fast.",
     rating: 5,
@@ -26,7 +26,7 @@ const testimonials = [
     id: 3,
     name: "John W.",
     role: "Entrepreneur",
-    image: "/images/reviews/image copy.png",
+    image: "/images/reviews/customer1.png",
     review:
       "The product looks even better in person. Excellent quality, great service and a very smooth shopping experience.",
     rating: 5,
@@ -35,7 +35,7 @@ const testimonials = [
     id: 4,
     name: "Emma R.",
     role: "Fashion Lover",
-    image: "/images/reviews/image copy.png",
+    image: "/images/reviews/customer2.png",
     review:
       "Absolutely loved my purchase. The design, quality and packaging were all perfect. I will definitely shop again.",
     rating: 5,

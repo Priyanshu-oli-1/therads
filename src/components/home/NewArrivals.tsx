@@ -17,7 +17,7 @@ const products = [
     id: 1,
     name: "Shiny Dress",
     category: "Women's Fashion",
-    image: "/images/newArrivals/image.png",
+    image: "/images/newArrivals/img1.png",
     price: 95.5,
     rating: 5,
   },
@@ -25,7 +25,7 @@ const products = [
     id: 2,
     name: "Long Dress",
     category: "Women's Fashion",
-    image: "/images/newArrivals/image copy.png",
+    image: "/images/newArrivals/img2.png",
     price: 95.5,
     rating: 5,
   },
@@ -33,7 +33,7 @@ const products = [
     id: 3,
     name: "Full Sweater",
     category: "Women's Fashion",
-    image: "/images/newArrivals/image copy 4.png",
+    image: "/images/newArrivals/img3.png",
     price: 95.5,
     rating: 5,
   },
@@ -41,7 +41,7 @@ const products = [
     id: 4,
     name: "White Dress",
     category: "Women's Fashion",
-    image: "/images/newArrivals/image.png",
+    image: "/images/newArrivals/img4.png",
     price: 95.5,
     rating: 5,
   },
@@ -49,7 +49,7 @@ const products = [
     id: 5,
     name: "Colorful Dress",
     category: "Women's Fashion",
-    image: "/images/newArrivals/image copy 5.png",
+    image: "/images/newArrivals/img5.png",
     price: 95.5,
     rating: 5,
   },
@@ -57,7 +57,7 @@ const products = [
     id: 6,
     name: "White Shirt",
     category: "Men's Fashion",
-    image: "/images/newArrivals/image.png",
+    image: "/images/newArrivals/img6.png",
     price: 95.5,
     rating: 5,
   },
@@ -71,17 +71,16 @@ export default function NewArrivals() {
   );
 
   return (
-    <section className="w-full bg-white py-20">
+    <section id="new-arrivals" className="w-full min-h-screen bg-white py-20 scroll-mt-28">
       <div className="mx-auto max-w-7xl px-6">
         {/* ================= HEADER ================= */}
         <div className="text-center">
-          <h2 className="font-serif text-5xl font-semibold text-gray-800">
+          <h2 className="font-serif text-5xl font-semibold text-gray-900">
             New Arrivals
           </h2>
 
-          <p className="mx-auto mt-4 max-w-xl text-xs leading-5 text-gray-400">
+          <p className="mx-auto mt-4 max-w-xl text-s leading-5 text-gray-500">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Scelerisque duis ultrices sollicitudin aliquam sem.
           </p>
         </div>
 

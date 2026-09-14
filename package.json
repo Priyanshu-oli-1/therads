@@ -12,11 +12,14 @@
     "contract:emit": "prisma contract emit"
   },
   "dependencies": {
+    "@clerk/nextjs": "^7.9.1",
+    "@reduxjs/toolkit": "^2.12.0",
     "dotenv": "^17.4.2",
     "lucide-react": "^1.38.0",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-redux": "^9.3.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

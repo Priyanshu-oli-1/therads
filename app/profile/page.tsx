@@ -1,34 +1,13 @@
 "use client";
-
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAuth } from "@/components/auth/authContext";
 import ProfileForm from "@/components/auth/ProfileForm";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 export default function ProfilePage() {
   const router = useRouter();
-
-  const {
-    user,
-    isLoggedIn,
-    logout,
-  } = useAuth();
-
-  /*
-    Protect the profile page.
-  */
-  useEffect(() => {
-    if (!isLoggedIn) {
-      router.push(
-        "/sign-in?redirect=/profile"
-      );
-    }
-  }, [isLoggedIn, router]);
-
-  if (!isLoggedIn || !user) {
-    return null;
-  }
+  const { user, logout } = useAuth();
 
   function handleLogout() {
     logout();
@@ -36,14 +15,12 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-12 md:px-8 lg:py-16">
-
-        {/* Heading */}
-        <div className="border-b border-gray-200 pb-8">
-          <p className="text-sm font-medium text-gray-500">
-            My Account
-          </p>
+    <ProtectedRoute>
+      <main className="min-h-screen bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-12 md:px-8 lg:py-16">
+          {/* Heading */}
+          <div className="border-b border-gray-200 pb-8">
+            <p className="text-sm font-medium text-gray-500">My Account</p>
 
           <h1 className="mt-3 font-serif text-4xl font-semibold text-gray-900">
             Profile
@@ -51,7 +28,6 @@ export default function ProfilePage() {
         </div>
 
         <div className="mt-10 grid gap-10 lg:grid-cols-[240px_1fr]">
-
           {/* Account navigation */}
           <aside>
             <nav className="space-y-1">
@@ -80,11 +56,8 @@ export default function ProfilePage() {
 
           {/* Profile */}
           <section className="border border-gray-200">
-
             <div className="border-b border-gray-200 px-6 py-6">
-              <h2 className="text-lg font-semibold">
-                Personal Information
-              </h2>
+              <h2 className="text-lg font-semibold">Personal Information</h2>
 
               <p className="mt-1 text-sm text-gray-500">
                 Update your THREADS account information.
@@ -104,10 +77,10 @@ export default function ProfilePage() {
                 Logout
               </button>
             </div>
-
           </section>
         </div>
       </div>
     </main>
+    </ProtectedRoute>
   );
 }

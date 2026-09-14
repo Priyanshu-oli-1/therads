@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { checkoutSchema } from "@/schema/validation/checkout";
-import { useCart } from "@/components/cart/cartContext";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 import { useAuth } from "@/components/auth/authContext";
 
 import CheckoutContact from "./CheckoutContact";
@@ -24,7 +25,9 @@ type FieldErrors = {
 export default function CheckoutForm() {
   const router = useRouter();
 
-  const { cart } = useCart();
+  const cart = useSelector(
+  (state: RootState) => state.cart.items
+);
   const { isLoggedIn } = useAuth();
 
   // Customer information.
